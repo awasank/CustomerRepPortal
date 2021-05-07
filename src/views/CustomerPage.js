@@ -35,26 +35,116 @@ function CustomerPage(props) {
   const [end, setEnd] = useState(true)   
   const [tokenSet, setTokenSet] = useState();
   const [reservationFn, setReservationFn] = useState(false)
-//   useEffect(() => {
-//       if (tokenSet) {
-//     //   props.fetchReservations(tokenSet)
-//       setReservationFn(true)  
-//       }
-    
-//   },[tokenSet])
 
-//   useEffect(() => {
-//     if (reservationFn) reservationsUpdate()
-//   },[reservationFn])
+  const [isReserved, setIsReserved] = useState(false)
+  const [numReserved, setNumReserved] = useState([]);
 
-//  const reservationsUpdate = () =>{
-//    console.log("Rervation Update " + props.reservations.message)
-//     setLogs(logs + "\n" + props.reservations.message)
-//  }
+  const [workerActivity, setWorkerActivity] = useState('Logged Out')
+
+  const [agentName, setAgentName] = useState('')
+
+  useEffect(() => {
+      setInterval(() => {
+        if (token) fetchReservations()    
+      }, 5000);
+      
+   }, [workerActivity === 'Available'])  
+
+   useEffect (() => {
+    switch (workerActivity) {
+        case "Logged Out":
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', true);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', true);
+            // getTrActivies();
+            setOnline(true)
+            setOffline(true)
+            setAccept(true)
+            setReject(true)
+            setEnd(true)
+            break;
+        case "Available":
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', false);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', true);
+            setOnline(true)
+            setOffline(false)
+            setAccept(true)
+            setReject(true)
+            setEnd(true)
+            break;
+        case "Offline":
+            // $('#btn-online').prop('disabled', false);
+            // $('#btn-offline').prop('disabled', true);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', true);
+            setOnline(false)
+            setOffline(true)
+            setAccept(true)
+            setReject(true)
+            setEnd(true)
+            break;
+        case "Incoming Reservation":
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', true);
+            // $('#btn-acceptTR').prop('disabled', false);
+            // $('#btn-rejectTR').prop('disabled', false);
+            // $('#btn-trHangup').prop('disabled', true);
+            setOnline(true)
+            setOffline(true)
+            setAccept(false)
+            setReject(false)
+            setEnd(true)
+            break;
+        case 'Reservation Accepted':
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', true);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', false);
+            setOnline(true)
+            setOffline(true)
+            setAccept(true)
+            setReject(true)
+            setEnd(false)
+            
+            break;
+        case "In a Call":
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', true);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', false);
+            setOnline(true)
+            setOffline(true)
+            setAccept(true)
+            setReject(true)
+            setEnd(false)
+            break;
+        case "canceled":
+            // $('#btn-online').prop('disabled', true);
+            // $('#btn-offline').prop('disabled', false);
+            // $('#btn-acceptTR').prop('disabled', true);
+            // $('#btn-rejectTR').prop('disabled', true);
+            // $('#btn-trHangup').prop('disabled', true);
+            setOnline(true)
+            setOffline(false)
+            setAccept(true)
+            setReject(true)
+            setEnd(true)
+            break;
+    }
+   }, [workerActivity])
 
 
   const onSubmit = (data) => {
     console.log(data)
+    setAgentName(data.Name)
     
     api.apiTaskRouter.getGrToken(data).then((res) => {
           // console.log(res.data)
@@ -66,11 +156,13 @@ function CustomerPage(props) {
     })
     // setValue({name: '', password: ''}) 
      
-    setOnline(false)
+    // setOnline(false)
+    setWorkerActivity('Offline')
   };
 
+  const [callSid, setCallSid] = useState();
   const fetchReservations = () => {
-    console.log("Fetch Reservations " + tokenSet)  
+    console.log("Fetch Reservations ")  
     var worker = new Twilio.TaskRouter.Worker(tokenSet);
     // console.log(worker)
     var queryParams = {"ReservationStatus":"pending"};
@@ -83,19 +175,29 @@ function CustomerPage(props) {
             }
             var data = reservations.data;
             for(i=0; i<data.length; i++) {
-                console.log(data[i].sid);
+                console.log(data[0].task.attributes.call_sid);
+                
             }
-            setLogs(logs + "\n" + reservations)
-        }
+            // console.log(reservations[0])
+            // setCallSid(reservations.data[0].task.attributes.call_sid)
+            // console.log("State Call SID" + callSid)
+            setLogs(logs + "\nFetching Reservations" )
+            data.forEach(d => setLogs(logs + "\n" + d.sid))    
+            setLogs(logs + "\nNumber of reservations " + data.length)
+            if (data.length > 0) {
+                setNumReserved(reservations)
+                setWorkerActivity('Incoming Reservation')
+                
+            }
+        },
+        queryParams
     );  
+    // console.log(typeof numReserved)
+    // console.log(Object.keys(numReserved))
+    // console.log(numReserved.data.task)
+    // console.log(numReserved[0].task.attributes.call_sid)
   }
   
-
-  const createTask = () => {
-    //   api.apiTaskRouter.createTask().then((res) => {
-    //       console.log(res)
-    //   })
-  }
 
   const goOnline = () => {
     var worker = new Twilio.TaskRouter.Worker(tokenSet);
@@ -115,18 +217,14 @@ function CustomerPage(props) {
         setLogs(logs + "\n" + res.data)
         
     })
-
-    
-    
     }); 
     console.log("Here")
-    setLogs(logs + "\nStatus Online")  
-    setOnline(true)
-    setOffline(false)
-    
+    // setLogs(logs + "\nStatus Online")  
+    setWorkerActivity('Available')
   }
 
   const goOffline = () => {
+    
     var worker = new Twilio.TaskRouter.Worker(tokenSet);
     // console.log(worker)
     var queryParams = {"ReservationStatus":"pending"};
@@ -146,34 +244,113 @@ function CustomerPage(props) {
     })
     }); 
     setLogs(logs + "\nStatus Offline")  
-    setOnline(false)
-    setOffline(true)
+    setWorkerActivity('Offline')
   }
 
   const acceptCall = () => {
+    // console.log(token)
+    // var worker = new Twilio.TaskRouter.Worker(tokenSet);
+    // // console.log(worker)
+    // setLogs(logs + "\nAccepting Reservation")
+    // //var queryParams = {"ReservationStatus":"pending"};
+    // worker.on("Reservation Accepted", function(reservation) {
+    //     console.log("reservation accepted")
+    //     console.log(reservation.task.attributes)      // {foo: 'bar', baz: 'bang' }
+    //     console.log(reservation.task.priority)        // 1
+    //     console.log(reservation.task.age)             // 300
+    //     console.log(reservation.task.sid)             // WTxxx
+    //     console.log(reservation.sid)                  // WRxxx
+    // });
+    
+    console.log(numReserved.data[0])
+    const payload = {
+        data: numReserved.data[0],
+        request: true,
+        callSid: callSid
+    }
+    setLogs(logs + "\nCall Accepted")
+    api.apiTaskRouter.acceptReject(payload).then((res) => {
+        console.log(res)
+        // api.apiTaskRouter.dequeueConference(payload).then((res) => {
+        // console.log(res)
+        // })
+    })
+    
 
-  }
 
-  const rejectCall = () => {
+    setWorkerActivity("In a Call")
+    }
 
+  const rejectCall = (token) => {
+    // console.log("Get Gr Token")
+    // console.log(token)
+    // var worker = new Twilio.TaskRouter.Worker(tokenSet);
+    // // console.log(worker)
+    // var queryParams = {"ReservationStatus":"pending"};
+    // worker.on("reservation.rejected", function(reservation) {
+    // console.log(reservation.task.attributes)      // {foo: 'bar', baz: 'bang' }
+    // console.log(reservation.task.priority)        // 1
+    // console.log(reservation.task.age)             // 300
+    // console.log(reservation.task.sid)             // WTxxx
+    // console.log(reservation.sid)                  // WRxxx
+    // })
+    console.log(numReserved.data[0])
+    const payload = {
+        data: numReserved.data[0],
+        request: false
+    }
+    api.apiTaskRouter.acceptReject(payload).then((res) => {
+        console.log(res)
+    })
+    setWorkerActivity("Offline")
   }
 
   const endConference = () => {
+    var worker = new Twilio.TaskRouter.Worker(tokenSet);
+    // console.log(worker)
+    var queryParams = {"ReservationStatus":"pending"};
+    worker.on("ready", function(worker) {
+    console.log(worker.sid)             // 'WKxxx'
+    console.log(worker.friendlyName)    // 'Worker 1'
+    console.log(worker.activityName)    // 'Reserved'
+    console.log(worker.available)       // false
 
+    var payload = {
+        data: numReserved.data[0],
+        workerSID: worker.sid
+    }
+    api.apiTaskRouter.endConference(payload).then((res) => {
+        setLogs(logs + "\n" + res.data)
+        
+    })
+    }); 
+    setLogs(logs + "\nStatus Offline")  
+    setWorkerActivity('Offline')  
+    setTimeout(() => {
+       setWorkerActivity("Available") 
+    }, 2000);
   }
   
+  
+
   return (
      <div className={classes.body}>
          <h1>Customer Representative Portal</h1>
     <form onSubmit={handleSubmit(onSubmit)}>
 
-
+       <div style={{display: workerActivity === 'Logged Out' ? "inline" : "none"}}>
       <input style={{width: "20%", margin: "2rem auto"}} className="form-control" {...register("Name", {required:true})} placeholder="Custome Name" />
       <input style={{width: "20%", margin: "2rem auto"}} className="form-control" {...register("Password", {required:true})} type="password" placeholder="password" />
+      <Button disabled={token && true} className={classes.btn} variant="contained" type="submit">Submit</Button>
+      </div>
       
        <br></br>
        <br></br>
-      <Button disabled={token && true} className={classes.btn} variant="contained" type="submit">Get Token</Button>
+       <div style={{display: workerActivity !== 'Logged Out' ? "inline" : "none"}}>
+      <h2>Agent Name: {agentName}</h2> 
+      </div>
+      <div><h3 style={{color: workerActivity === "Incoming Reservation" ? "red" : "black"}}>Current Status: {workerActivity}</h3></div>
+      
       <Button onClick={goOnline} disabled={online && true} className={classes.btn} variant="contained">Go Online</Button>
       <Button onClick={goOffline} disabled={offline} className={classes.btn} variant="contained">Go Offline</Button>
       <Button onClick={acceptCall} disabled={accept && true} className={classes.btn} variant="contained">Accept</Button>
