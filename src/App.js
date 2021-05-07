@@ -2,11 +2,11 @@ import React from "react";
 import CustomerPage from "./views/CustomerPage";
 const App = () => {
   return (
-    <div>
+    <main className="main_div">
       {/* <HelloWorld /> */}
       {/* <RenderForm /> */}
       <CustomerPage />
-    </div>
+    </main>
   );
 };
 

@@ -3,7 +3,13 @@ import { set, useForm } from "react-hook-form";
 import api from "../api"
 import helper from "../utils/helper"
 import {Button} from "@material-ui/core"
+import Box from '@material-ui/core/Box';
+
 import {makeStyles} from "@material-ui/styles"
+import Grid from '@material-ui/core/Grid';
+
+import '../index.css';
+
 
 import {connect} from "react-redux";
 import {fetchReservations} from "../actions/taskRouterActions"
@@ -13,12 +19,23 @@ const useStyle = makeStyles(() => ({
     body:{
         padding: "2rem"
     },
+    root: {
+        flexGrow: 1,
+      },
     btn: {
-        margin: "2rem 2rem",
+        margin: "1rem 1rem",
         width: "10rem",
-        height: "5rem"
+        height: "5rem",
+        color: "#0099CC",
+        border: "2px solid #0099CC",
+        borderRadius: "6px",
+        
 
-    }
+
+    },
+    paper: {
+        height: "100%"
+      }
 }))
 
 function CustomerPage(props) {
@@ -334,32 +351,53 @@ function CustomerPage(props) {
   
 
   return (
+      
      <div className={classes.body}>
-         <h1>Customer Representative Portal</h1>
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div className={classes.root}>
+    <Grid container spacing={5} direction="row" justify="flex-start" alignItems="flex-start">
+        <Grid item sm={4} md={4} lg={3} className="left_panel" style={{ minHeight:"900px"}}>
+            <div style={{minHeight:"75px", backgroundColor:"rgb(54, 49, 119)", color:"white", marginBottom:"1rem"}}><h4 style={{textAlign: "center", paddingTop:"10px"}}>Customer Representative Portal</h4></div>
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-       <div style={{display: workerActivity === 'Logged Out' ? "inline" : "none"}}>
-      <input style={{width: "20%", margin: "2rem auto"}} className="form-control" {...register("Name", {required:true})} placeholder="Custome Name" />
-      <input style={{width: "20%", margin: "2rem auto"}} className="form-control" {...register("Password", {required:true})} type="password" placeholder="password" />
-      <Button disabled={token && true} className={classes.btn} variant="contained" type="submit">Submit</Button>
-      </div>
-      
-       <br></br>
-       <br></br>
-       <div style={{display: workerActivity !== 'Logged Out' ? "inline" : "none"}}>
-      <h2>Agent Name: {agentName}</h2> 
-      </div>
-      <div><h3 style={{color: workerActivity === "Incoming Reservation" ? "red" : "black"}}>Current Status: {workerActivity}</h3></div>
-      
-      <Button onClick={goOnline} disabled={online && true} className={classes.btn} variant="contained">Go Online</Button>
-      <Button onClick={goOffline} disabled={offline} className={classes.btn} variant="contained">Go Offline</Button>
-      <Button onClick={acceptCall} disabled={accept && true} className={classes.btn} variant="contained">Accept</Button>
-      <Button onClick={rejectCall} disabled={reject && true} className={classes.btn} variant="contained">Reject</Button>
-      <Button onClick={endConference} disabled={end && true} className={classes.btn} variant="contained">End Conference</Button>
-      <div>
-      <textarea style={{width: "50%", margin: "2rem auto"}} value={logs} name="logs" placeholder="logs here" rows="5" className="form-control" readOnly></textarea>
-      </div>
-    </form>
+        <div className='login_div' style={{display: workerActivity === 'Logged Out' ? "inline" : "none"}}>
+        <input className="form-control" {...register("Name", {required:true})} placeholder="Custome Name" />
+        <input className="form-control" {...register("Password", {required:true})} type="password" placeholder="password" />
+        <Button disabled={token && true} className='login_btn' variant="contained" type="submit">Login</Button>
+        </div>
+        <div className='status_div'>
+            <div style={{display: workerActivity !== 'Logged Out' ? "inline" : "none"}}>
+                <h2>Agent Name: {agentName}</h2> 
+            </div>
+        
+            <div>
+                <h3 style={{color: workerActivity === "Incoming Reservation" ? "red" : "black"}}>Current Status: {workerActivity}</h3>
+            </div>
+        </div>
+        <div className='agent_buttons'>
+            <Button onClick={goOnline} disabled={online && true} className={classes.btn} variant="contained">Go Online</Button>
+            <Button onClick={goOffline} disabled={offline} className={classes.btn} variant="contained">Go Offline</Button>
+            <Button onClick={acceptCall} disabled={accept && true} className={classes.btn} variant="contained">Accept</Button>
+            <Button onClick={rejectCall} disabled={reject && true} className={classes.btn} variant="contained">Reject</Button>
+            <Button onClick={endConference} disabled={end && true} className={classes.btn} variant="contained">End Conference</Button>
+        </div>
+        <div>
+        {/* <textarea style={{width: "50%", margin: "2rem auto"}} value={logs} name="logs" placeholder="logs here" rows="5" className="form-control" readOnly></textarea> */}
+        </div>
+        </form>
+        </Grid>
+        <Grid item sm={8} md={8} lg={9} className='right_panel' style={{ minHeight:"900px"}}>
+            <Grid className="customer_info_border_wrap" container spacing={5} direction="row" justify="flex-start" alignItems="flex-start">
+                <Grid item sm={12} md={12} lg={12} style={{ minHeight:"100px", borderBottom:"5px ridge #E0C4BA"}}>
+                    hello
+                </Grid>
+                <Grid   item sm={12} md={12} lg={12} style={{ minHeight:"780px"}}>
+                    hello
+                </Grid>
+
+            </Grid>
+        </Grid>
+    </Grid>
+    </div>
     </div> 
   );
 }
