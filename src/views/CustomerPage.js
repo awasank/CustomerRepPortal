@@ -3,7 +3,6 @@ import { set, useForm } from "react-hook-form";
 import api from "../api"
 import helper from "../utils/helper"
 import {Button} from "@material-ui/core"
-import Box from '@material-ui/core/Box';
 
 import {makeStyles} from "@material-ui/styles"
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +12,8 @@ import '../index.css';
 
 import {connect} from "react-redux";
 import {fetchReservations} from "../actions/taskRouterActions"
+import CustomerInfoPage from "./CustomerInfoPage";
+import AdditionalInfoPage from "./AdditionalInfoPage";
 
 
 const useStyle = makeStyles(() => ({
@@ -354,7 +355,8 @@ function CustomerPage(props) {
       
      <div className={classes.body}>
     <div className={classes.root}>
-    <Grid container spacing={5} direction="row" justify="flex-start" alignItems="flex-start">
+        <div className='mainGrid'>
+    <Grid container spacing={5} direction="row" justify="flex-start" alignItems="flex-start" >
         <Grid item sm={4} md={4} lg={3} className="left_panel" style={{ minHeight:"900px"}}>
             <div style={{minHeight:"75px", backgroundColor:"rgb(54, 49, 119)", color:"white", marginBottom:"1rem"}}><h4 style={{textAlign: "center", paddingTop:"10px"}}>Customer Representative Portal</h4></div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -388,15 +390,15 @@ function CustomerPage(props) {
         <Grid item sm={8} md={8} lg={9} className='right_panel' style={{ minHeight:"900px"}}>
             <Grid className="customer_info_border_wrap" container spacing={5} direction="row" justify="flex-start" alignItems="flex-start">
                 <Grid item sm={12} md={12} lg={12} style={{ minHeight:"100px", borderBottom:"5px ridge #E0C4BA"}}>
-                    hello
+                    <AdditionalInfoPage/>
                 </Grid>
-                <Grid   item sm={12} md={12} lg={12} style={{ minHeight:"780px"}}>
-                    hello
+                <Grid   item sm={12} md={12} lg={12} style={{ minHeight:"780px", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <CustomerInfoPage/>
                 </Grid>
 
             </Grid>
         </Grid>
-    </Grid>
+    </Grid></div>
     </div>
     </div> 
   );

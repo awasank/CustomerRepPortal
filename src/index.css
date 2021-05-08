@@ -8,7 +8,7 @@ html, body {
 .main_div{
   position: relative;
   min-height: 100vh;
-  background-color:#dedceb ;
+  background-color:#1f0d99 ;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -66,4 +66,29 @@ html, body {
 
 .left_panel{
   background-color: #e7f0ea;
+}
+
+.mainGrid{
+  margin-top: 3rem;
+}
+
+
+
+.accountInformation_header{
+  padding-top: 3px;
+  display: flex;
+  height: 3rem;
+  background-color: black;
+  align-items: center;
+}
+
+.accountInformation_header > p{
+  font-size: 1.5rem;
+  color: white;
+  padding-left: 0.5rem;
+}
+
+
+.clientInformation_form > section {
+  font-size: 1.25rem;
 }
