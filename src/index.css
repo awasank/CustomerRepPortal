@@ -8,10 +8,10 @@ html, body {
 .main_div{
   position: relative;
   min-height: 100vh;
-  background-color:#1f0d99 ;
+  background-color: #0E1B25;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box
 }
 
 .main_div >h1 {
@@ -26,7 +26,7 @@ html, body {
 
 .login_div > button {
   width:100%;
-  background-color:#86eb86;
+  background-color:#AAE15D;
   cursor: pointer;
   transition: transform .2s;
 }
@@ -91,4 +91,20 @@ html, body {
 
 .clientInformation_form > section {
   font-size: 1.25rem;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }

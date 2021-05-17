@@ -17,6 +17,12 @@ export const acceptReject = (payload) => api.post("/task-router/accept-reservati
 
 export const dequeueConference = (payload) => api.post("/task-router/dequeue-conference", payload)
 export const endConference = (payload) => api.post("/task-router/end-conference", payload)
+export const completeTask = (payload) => api.post("/task-router/complete-task", payload)
+
+
+export const fetchUserByNumber = (number) => api.post(`/task-router/get-account-info-by-number${number}`)
+export const fetchUserByInfo = (code) => api.post(`/task-router/get-account-info${code}`)
+export const fetchWorkersBySid = (payload) => api.post("/task-router/fetch-workers-by-sid", payload)
 
 const apiTaskRouter = {
     fetchWorkers,
@@ -26,7 +32,11 @@ const apiTaskRouter = {
     offline,
     acceptReject,
     dequeueConference,
-    endConference
+    endConference,
+    completeTask,
+    fetchUserByNumber,
+    fetchUserByInfo,
+    fetchWorkersBySid
 }
 
 export default {apiTaskRouter}
